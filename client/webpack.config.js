@@ -18,7 +18,29 @@ module.exports = () => {
       path: path.resolve(__dirname, 'dist'),
     },
     plugins: [
-      
+      new HtmlWebpackPlugin({
+        template: './src/index.html',
+        chunks: ['main'],
+      }),
+      new WebpackPwaManifest({
+        name: 'Write Anytime',
+        short_name: 'WriteAnytime',
+        description: 'A text editor that runs in the browser and works offline.',
+        background_color: '#212121',
+        theme_color: '#212121',
+        fingerprints: false,
+        publicPath: './',
+        crossorigin: null,
+        icons: [
+          {
+            src: path.resolve('src/images/logo.png'),
+            sizes: [72, 96, 128, 144, 152, 192, 384, 512],
+          },
+        ],
+      }),
+      new InjectManifest({
+        swSrc: './src-sw.js',
+      }),
     ],
 
     module: {
