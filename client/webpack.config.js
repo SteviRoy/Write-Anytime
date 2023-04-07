@@ -4,7 +4,9 @@ const path = require('path');
 const { InjectManifest } = require('workbox-webpack-plugin');
 
 // TODO: Add and configure workbox plugins for a service worker and manifest file.
+const WorkboxPlugin = require
 // TODO: Add CSS loaders and babel to webpack.
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = () => {
   return {
@@ -19,9 +21,10 @@ module.exports = () => {
     },
     plugins: [
       new HtmlWebpackPlugin({
-        template: './src/index.html',
-        chunks: ['main'],
+        template: './index.html',
+        title: 'JATE'
       }),
+      new MiniCssExtractPlugin(),
       new WebpackPwaManifest({
         name: 'Write Anytime',
         short_name: 'WriteAnytime',
@@ -30,22 +33,38 @@ module.exports = () => {
         theme_color: '#212121',
         fingerprints: false,
         publicPath: './',
-        crossorigin: null,
+        start_url: '/',
         icons: [
           {
             src: path.resolve('src/images/logo.png'),
-            sizes: [72, 96, 128, 144, 152, 192, 384, 512],
+            sizes: [96, 128, 144, 152, 192, 384, 512],
+            destination: path.join('assets', 'icons')
           },
         ],
       }),
       new InjectManifest({
         swSrc: './src-sw.js',
+        swDest: "src-sw.js",
       }),
     ],
 
     module: {
       rules: [
-        
+        {
+          test: /\.css$/i,
+          use: ['style-loader', 'css-loader'],
+        },
+        {
+          test: /\.m?js$/,
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env'],
+              plugins: ['@babel/plugin-proposal-object-rest-spread', '@babel/transform-runtime'],
+            },
+          },
+        },
       ],
     },
   };

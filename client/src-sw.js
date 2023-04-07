@@ -28,7 +28,7 @@ registerRoute(({ request }) => request.mode === 'navigate', pageCache);
 
 // TODO: Implement asset caching
 registerRoute(
-  /\.(?:js|css|png|gif|jpg|svg|woff2?|ttf|otf|eot|ico)$/i,
+  ({ request }) => request.destination === 'style' || request.destination === 'script',
   new CacheFirst({
     cacheName: 'asset-cache',
     plugins: [
